@@ -427,6 +427,7 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
             <span class="logo-text">S-Five Inland Resort</span>
         </a>
         <ul class="nav-links">
+            <li><a href="index.php">Home</a></li>
             <li><a href="index.php#cottages">Cottages</a></li>
             <li><a href="index.php#about">About</a></li>
             <li><a href="check_booking.php">My Booking</a></li>
