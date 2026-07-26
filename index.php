@@ -237,19 +237,19 @@ $category_info = [
     <div class="container about-grid">
         <div class="about-visual">
             <div class="about-img-box"><div class="about-emoji-main">🌴</div>
-                <div class="about-badge-float">Est. 2019</div>
+                <div class="about-badge-float">Est. 2018</div>
             </div>
             <div class="about-stat-cards">
-                <div class="stat-card"><strong>12</strong><span>Cottages</span></div>
+                <div class="stat-card"><strong>11</strong><span>Cottages</span></div>
                 <div class="stat-card"><strong>500+</strong><span>Happy Guests</span></div>
                 <div class="stat-card"><strong>★ 4.9</strong><span>Rating</span></div>
             </div>
         </div>
         <div class="about-text">
             <p class="section-label">Our Story</p>
-            <h2 class="section-title">A Place to <em>Breathe Again</em></h2>
-            <p>Nestled deep in the heart of inland Philippines, <strong>S-Five Inland Resort</strong> was born from a dream — to preserve the warmth and beauty of Filipino rural life while offering guests a peaceful retreat from the city.</p>
-            <p>From fan-cooled Bahay Kubos to luxurious Premium Suites and grand event cottages, every corner of S-Five is designed to feel like home — just a more beautiful, more restful version of it.</p>
+            <h2 class="section-title">A Place to <em>Relax, and Create Memories</em></h2>
+            <p>Nestled in the peaceful municipality of Barangay San Jose, San Miguel, Iloilo, <strong>S-Five Inland Resort</strong> offers a refreshing escape where families, friends, and visitors can unwind away from the busy pace of everyday life. Surrounded by the calm atmosphere of the countryside, the resort provides a welcoming destination for relaxation, celebrations, and quality time together.</p>
+            <p>With its swimming pools, cottages, comfortable rooms, and event spaces, S-Five Inland Resort is an ideal venue for family outings, reunions, birthdays, company gatherings, and overnight stays. Every visit is designed to provide comfort, convenience, and memorable experiences for guests of all ages.</p>
             <a href="booking.php" class="btn-primary" style="margin-top:1.5rem;display:inline-block;">Plan Your Stay</a>
         </div>
     </div>
