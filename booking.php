@@ -4,14 +4,7 @@ require_once 'includes/config.php';
 require_once 'includes/gcash.php';
 require_once 'includes/paymongo.php';
 $db = getDB();
-
-// ===============================================================
 // SELF-CONTAINED AJAX ENDPOINTS
-// ===============================================================
-// Instead of separate files (check_availability.php, get_booked_dates.php)
-// that have to be remembered and uploaded alongside this one, the JS on
-// this page calls booking.php?action=... and gets handled right here,
-// before any HTML is rendered. One file, nothing extra to misplace.
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
 
