@@ -167,17 +167,6 @@ $guests     = isset($_GET['guests'])     ? (int)$_GET['guests']       : 2;
 $cottage_id = isset($_GET['cottage_id']) ? (int)$_GET['cottage_id']   : 0;
 
 // All cottages with booking status
-//
-// FIX: Previously, when no check_in/check_out were supplied, this fell back
-// to checking whether a cottage was booked "right now" (today). That status
-// has nothing to do with the dates the visitor is actually trying to book,
-// and — combined with the JS never re-checking availability after the page
-// loaded — caused cottages to stay stuck as "Unavailable" even after picking
-// completely different dates. Now: if no dates are known yet, every cottage
-// defaults to available, and the real per-date check happens live via
-// the ?action=check_availability endpoint at the top of this file (see
-// JS at the bottom of this file) the moment both dates are filled in or
-// changed.
 function getCottagesWithStatus($db, $check_in, $check_out) {
     if ($check_in && $check_out) {
         $stmt = $db->prepare("
@@ -275,9 +264,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Double booking check — this is the authoritative, server-side check
-    // for the EXACT dates submitted. It always re-evaluates against the
-    // current dates in $_POST, so it's already correct for "another day or
-    // date" — the bug was only in the front-end list rendering above.
+    // for the EXACT dates submitted.
     if (empty($errors) && $cottage_id) {
         $stmt = $db->prepare("
             SELECT COUNT(*) FROM reservations
@@ -316,12 +303,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         $res_id = $db->lastInsertId();
 
-        // ===== MANUAL GCASH — screenshot proof of payment ===== (unchanged)
-        // Guest has already paid via the GCash app before submitting this
-        // form. We just record the reference number + sender details and
-        // store the screenshot as proof. The booking stays "Pending" and
-        // payment "Pending Verification" until an admin checks the proof
-        // against the actual GCash account and verifies it (admin/gcash.php).
+        // ===== MANUAL GCASH — screenshot proof of payment
         if ($payment_method === 'GCash') {
             $proof_filename = uploadGcashProof($_FILES['gcash_proof'], $booking_code);
 
@@ -383,8 +365,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
             $success = true;
         } else {
-            // Roll back the reservation if the GCash proof step failed after
-            // insert, so we don't leave an orphaned booking with no proof.
             if (isset($res_id) && $payment_method === 'GCash') {
                 $db->prepare("DELETE FROM reservations WHERE id=?")->execute([$res_id]);
             }
@@ -908,8 +888,6 @@ document.querySelectorAll('.cottage-options').forEach(container => {
         document.getElementById('summary-cottage-name').textContent = label.dataset.name;
         updateTotal();
         validateGuests();
-        // Now that a specific cottage is chosen, the indicator should show
-        // THAT cottage's booked dates rather than resort-wide fully-booked dates.
         loadBookedDates(selectedCottageId);
     });
 });
@@ -939,10 +917,6 @@ function updateTotal() {
     }
 }
 
-// ── THE FIX: live availability check ───────────────────────
-// Re-queries the server for the dates currently in the form and
-// enables/disables each cottage option to match — instead of trusting
-// whatever was rendered when the page first loaded.
 let availabilityRequestSeq = 0;
 function refreshCottageAvailability() {
     const ci = document.getElementById('check_in').value;
@@ -1090,7 +1064,7 @@ function loadBookedDates(cottageId) {
         .catch(err => console.error('Could not load booked dates:', err));
 }
 
-// ── Date change listeners ──────────────────────────────────
+// ── Date change listeners
 document.getElementById('check_in').addEventListener('change', function() {
     const d = new Date(this.value); d.setDate(d.getDate() + 1);
     document.getElementById('check_out').min = d.toISOString().split('T')[0];
@@ -1102,13 +1076,13 @@ document.getElementById('check_out').addEventListener('change', function() {
     refreshCottageAvailability();
 });
 
-// ── Guest count change listener ────────────────────────────
+// ── Guest count change listener
 document.getElementById('num_guests').addEventListener('change', function() {
     updateTotal();
     validateGuests();
 });
 
-// ── Payment method toggle ──────────────────────────────────
+// ── Payment method toggle
 function setGcashFieldsRequired(isManual) {
     ['gcash_reference', 'gcash_sender_name'].forEach(id => {
         document.getElementById(id).required = isManual;
@@ -1146,7 +1120,7 @@ document.querySelectorAll('input[name=payment_method]').forEach(radio => {
     });
 });
 
-// ── Screenshot preview ──────────────────────────────────────
+// ── Screenshot preview
 document.getElementById('gcash_proof').addEventListener('change', function() {
     const preview = document.getElementById('gcashProofPreview');
     const file = this.files && this.files[0];
@@ -1156,15 +1130,11 @@ document.getElementById('gcash_proof').addEventListener('change', function() {
     reader.readAsDataURL(file);
 });
 
-// ── Init: restore payment method state after form error re-render ───
 const checkedPaymentMethod = document.querySelector('input[name=payment_method]:checked');
 if (checkedPaymentMethod) {
     applyPaymentMethod(checkedPaymentMethod.value);
 }
 
-// ── Init: run guest validation + a fresh availability check on load ──
-// (covers the case where the page loaded with dates already in the URL —
-// we still re-verify live rather than trusting the initial render)
 validateGuests();
 refreshCottageAvailability();
 loadBookedDates(selectedCottageId);
