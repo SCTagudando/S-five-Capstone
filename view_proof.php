@@ -46,6 +46,7 @@ if ($code) {
         <ul class="nav-links">
             <li><a href="index.php">Home</a></li>
             <li><a href="check_booking.php" class="btn-nav">My Booking</a></li>
+            <button class="nav-toggle" id="navToggle">☰</button>
         </ul>
     </div>
 </nav>

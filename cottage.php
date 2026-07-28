@@ -58,6 +58,7 @@ $amenities_list = array_map('trim', explode(',', $cottage['amenities']));
             <li><a href="index.php#cottages">← All Cottages</a></li>
             <li><a href="check_booking.php">My Booking</a></li>
             <li><a href="booking.php?cottage_id=<?= $id ?>" class="btn-nav">Book This</a></li>
+             <button class="nav-toggle" id="navToggle">☰</button>
         </ul>
     </div>
 </nav>

@@ -432,6 +432,9 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
             <li><a href="index.php#about">About</a></li>
             <li><a href="check_booking.php">My Booking</a></li>
         </ul>
+        <button class="nav-toggle" id="navToggle">☰</button>
+    </div>
+</nav>
     </div>
 </nav>
 

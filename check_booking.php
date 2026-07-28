@@ -116,6 +116,9 @@ if ($code) {
             <li><a href="index.php">Home</a></li>
             <li><a href="booking.php" class="btn-nav">Book Now</a></li>
         </ul>
+        <button class="nav-toggle" id="navToggle">☰</button>
+    </div>
+</nav>
     </div>
 </nav>
 
