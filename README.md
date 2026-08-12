@@ -82,6 +82,7 @@ Each has a watermark: _"Sample image — replace with actual photo"_
 
 ---
 
+<<<<<<< HEAD
 ##  GCash QR Code Setup (Manual Payment)
 
 The **Pay via GCash (Manual)** option on the booking page shows guests a QR code + your account name to scan and pay — no typed GCash number. Manage it anytime from **Admin > Settings > GCash QR Code**:
@@ -106,6 +107,8 @@ ALTER TABLE `gcash_settings` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_I
 
 ---
 
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 ##  Cottage Types
 
 | Type | Count | Price | Features |

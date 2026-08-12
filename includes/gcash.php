@@ -1,4 +1,12 @@
 <?php
+<<<<<<< HEAD
+=======
+
+/**
+ * Save a pending GCash payment submission after booking.
+ * Called right after the reservation is inserted.
+ */
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 function saveGcashSubmission(array $params): array {
 
 
@@ -55,6 +63,7 @@ function uploadGcashProof(array $file, string $booking_code): string {
 
     return move_uploaded_file($file['tmp_name'], $dest) ? $filename : '';
 }
+<<<<<<< HEAD
 
 /**
  * Get the current GCash QR code + account name shown to guests.
@@ -122,4 +131,6 @@ function saveGcashSettings(PDO $db, string $account_name, ?array $file): array {
 
     return ['success' => true];
 }
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 ?>

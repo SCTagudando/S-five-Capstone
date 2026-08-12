@@ -1,14 +1,23 @@
 <?php
+<<<<<<< HEAD
 // admin/settings.php — Admin account settings (change password) + GCash QR settings
 require_once 'auth.php';
 require_once '../includes/gcash.php';
+=======
+// admin/settings.php — Admin account settings (change password)
+require_once 'auth.php';
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 $page_title = 'Settings';
 $db  = getDB();
 $msg = '';
 
+<<<<<<< HEAD
 $form = $_POST['form'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $form === 'password') {
+=======
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
     $current_password = $_POST['current_password'] ?? '';
     $new_password     = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
@@ -33,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $form === 'password') {
     }
 }
 
+<<<<<<< HEAD
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $form === 'gcash') {
     $account_name = clean($_POST['gcash_account_name'] ?? '');
     if ($account_name === '') $account_name = 'S-Five Inland Resort';
@@ -47,6 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $form === 'gcash') {
 
 $gcash_settings = getGcashSettings($db);
 
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 [$msg_type, $msg_text] = $msg ? explode(':', $msg, 2) : ['', ''];
 include 'partials/header.php';
 ?>
@@ -69,7 +81,10 @@ include 'partials/header.php';
     </div>
     <div class="card-body">
         <form method="POST" class="admin-form">
+<<<<<<< HEAD
             <input type="hidden" name="form" value="password">
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
             <div class="form-group">
                 <label>Current Password</label>
                 <input type="password" name="current_password" placeholder="••••••••" required autocomplete="current-password">
@@ -87,6 +102,7 @@ include 'partials/header.php';
     </div>
 </div>
 
+<<<<<<< HEAD
 <div class="card" style="max-width:520px;margin-top:1.5rem;">
     <div class="card-header">
         <h3>GCash QR Code</h3>
@@ -127,4 +143,6 @@ include 'partials/header.php';
     </div>
 </div>
 
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 <?php include 'partials/footer.php'; ?>

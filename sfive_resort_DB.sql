@@ -112,6 +112,7 @@ CREATE TABLE `gcash_payments` (
 -- --------------------------------------------------------
 
 --
+<<<<<<< HEAD
 -- Table structure for table `gcash_settings`
 --
 
@@ -132,6 +133,8 @@ INSERT INTO `gcash_settings` (`id`, `account_name`, `qr_image`) VALUES
 -- --------------------------------------------------------
 
 --
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 -- Table structure for table `reservations`
 --
 
@@ -203,12 +206,15 @@ ALTER TABLE `gcash_payments`
   ADD KEY `reservation_id` (`reservation_id`);
 
 --
+<<<<<<< HEAD
 -- Indexes for table `gcash_settings`
 --
 ALTER TABLE `gcash_settings`
   ADD PRIMARY KEY (`id`);
 
 --
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 -- Indexes for table `reservations`
 --
 ALTER TABLE `reservations`
@@ -246,12 +252,15 @@ ALTER TABLE `gcash_payments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
+<<<<<<< HEAD
 -- AUTO_INCREMENT for table `gcash_settings`
 --
 ALTER TABLE `gcash_settings`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 -- AUTO_INCREMENT for table `reservations`
 --
 ALTER TABLE `reservations`

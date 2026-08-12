@@ -4,10 +4,13 @@ require_once 'includes/config.php';
 require_once 'includes/gcash.php';
 require_once 'includes/paymongo.php';
 $db = getDB();
+<<<<<<< HEAD
 $gcash_settings = getGcashSettings($db);
 $gcash_qr_url = !empty($gcash_settings['qr_image']) && file_exists(__DIR__ . '/uploads/gcash/' . $gcash_settings['qr_image'])
     ? 'uploads/gcash/' . $gcash_settings['qr_image'] . '?v=' . filemtime(__DIR__ . '/uploads/gcash/' . $gcash_settings['qr_image'])
     : '';
+=======
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 // SELF-CONTAINED AJAX ENDPOINTS
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
@@ -719,6 +722,7 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                             <div class="gcash-steps">
                                 <p><strong>Pay first, then submit this form:</strong></p>
                                 <ol>
+<<<<<<< HEAD
                                     <li>Open your GCash app and scan the QR code below</li>
                                 </ol>
                                 <div class="gcash-account-box" style="background:#f0fdf6;border:1.5px dashed #a3cfbb;border-radius:8px;padding:0.9rem 1rem;margin:0.5rem 0;text-align:center;">
@@ -733,6 +737,16 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                                 </div>
                                 <ol start="2">
                                     <li>Enter <strong id="gcashAmountHint">the total amount</strong> in the GCash app and complete the payment</li>
+=======
+                                    <li>Open your GCash app and send <strong id="gcashAmountHint">the total amount</strong> to:</li>
+                                </ol>
+                                <div class="gcash-account-box" style="background:#f0fdf6;border:1.5px dashed #a3cfbb;border-radius:8px;padding:0.75rem 1rem;margin:0.5rem 0;">
+                                    <div style="font-size:0.78rem;color:#5a8a6f;font-weight:700;text-transform:uppercase;">GCash Number</div>
+                                    <div style="font-size:1.1rem;font-weight:700;color:#0a5c36;"><?= GCASH_NUMBER ?></div>
+                                    <div style="font-size:0.85rem;color:#444;"><?= GCASH_ACCOUNT_NAME ?></div>
+                                </div>
+                                <ol start="2">
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
                                     <li>Take a <strong>screenshot</strong> of your GCash payment receipt</li>
                                     <li>Fill in the reference number and upload the screenshot below</li>
                                     <li>Submit — your booking will show as <strong>Pending Verification</strong> until our team confirms it</li>
@@ -807,6 +821,7 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                 <!-- GCash Manual reminder -->
                 <div class="sidebar-gcash" id="sidebarGcash" style="display:none;">
                     <div class="gcash-qr-box">
+<<<<<<< HEAD
                         <?php if ($gcash_qr_url): ?>
                         <div class="qr-placeholder" style="padding:0.75rem;">
                             <img src="<?= htmlspecialchars($gcash_qr_url) ?>" alt="GCash QR Code"
@@ -821,6 +836,14 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                             <strong><?= htmlspecialchars($gcash_settings['account_name']) ?></strong>
                         </div>
                         <?php endif; ?>
+=======
+                        <div class="qr-placeholder">
+                            <span>💵</span>
+                            <p>Send Payment To</p>
+                            <strong><?= GCASH_NUMBER ?></strong>
+                            <small><?= GCASH_ACCOUNT_NAME ?></small>
+                        </div>
+>>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
                     </div>
                 </div>
 
