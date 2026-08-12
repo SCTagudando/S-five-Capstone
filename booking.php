@@ -4,13 +4,10 @@ require_once 'includes/config.php';
 require_once 'includes/gcash.php';
 require_once 'includes/paymongo.php';
 $db = getDB();
-<<<<<<< HEAD
 $gcash_settings = getGcashSettings($db);
 $gcash_qr_url = !empty($gcash_settings['qr_image']) && file_exists(__DIR__ . '/uploads/gcash/' . $gcash_settings['qr_image'])
     ? 'uploads/gcash/' . $gcash_settings['qr_image'] . '?v=' . filemtime(__DIR__ . '/uploads/gcash/' . $gcash_settings['qr_image'])
     : '';
-=======
->>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 // SELF-CONTAINED AJAX ENDPOINTS
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
