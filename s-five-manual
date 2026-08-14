@@ -1,0 +1,366 @@
+# S-Five Inland Resort Online Booking Manual
+
+## 1. Introduction
+
+The S-Five Inland Resort Online Booking System is a web-based system designed to make the reservation process easier, faster, and more convenient for customers. Instead of visiting the resort personally to inquire about available cottages and make reservations, customers can use the website to view the available accommodations, select their preferred cottage, provide their information, and submit a booking request online.
+
+This user manual provides step-by-step instructions on how customers can navigate and use the online booking system.
+
+---
+
+## 2. System Requirements
+
+To access the S-Five Inland Resort Online Booking System, the user should have the following:
+
+• A desktop computer, laptop, tablet, or smartphone
+
+• An internet connection
+
+• A modern web browser such as Google Chrome
+
+• A valid email address or contact information for booking communication
+
+---
+
+## 3. Accessing the Website
+
+### Step 1: Open a Web Browser
+
+Open a web browser on your device.
+
+Recommended browser:
+
+• Google Chrome
+
+### Step 2: Enter the Website Address
+
+Enter the following address in the browser's address bar:
+
+`https://s-five.infinityfree.me`
+
+The system homepage will then be displayed.
+
+### Step 3: View the Homepage
+
+The homepage provides access to the main sections of the website.
+
+The navigation menu contains:
+
+• Cottages
+
+• About
+
+• Amenities
+
+• My Booking
+
+• Book Now
+
+The homepage also provides:
+
+• Reserve Now
+
+• Explore Cottages
+
+---
+
+## 4. Exploring the Cottages
+
+Customers can view the available cottages before making a reservation.
+
+### Step 1: Select "Cottages"
+
+Click the **Cottages** option in the navigation menu.
+
+### Step 2: View Cottage Information
+
+The cottage section displays information about the available accommodations.
+
+Customers can review:
+
+• Cottage name
+
+• Cottage images
+
+• Capacity
+
+• Available amenities
+
+• Price
+
+• Other relevant accommodation details
+
+### Step 3: Choose a Cottage
+
+After reviewing the available cottages, select the cottage that best suits your needs.
+
+### Step 4: Enter Customer Information
+
+Provide the required customer details.
+
+Examples include:
+
+• Full Name
+
+• Contact Number
+
+• Email Address
+
+• Special Requests
+
+Customers should provide correct information to avoid problems with the reservation.
+
+---
+
+## 5. Selecting a Payment Method
+
+After completing the booking information, the system displays the **Payment Method** section.
+
+There are two available payment options.
+
+### Option 1: Pay Online
+
+The **Pay Online** option allows customers to pay directly through the secure checkout page.
+
+Supported payment methods:
+
+• Maya
+
+• Home Credit
+
+• BPI
+
+• GCash
+
+• QR Ph
+
+### How to Pay Online
+
+1. Select **Pay Online**.
+2. Click **Confirm Reservation**.
+3. The system redirects the customer to the secure checkout page.
+4. Enter the required payment information.
+5. Choose the preferred payment method.
+6. Complete the payment.
+7. Wait for the payment to be processed.
+8. Once the payment is successful, the booking is automatically confirmed.
+
+**Important:** No manual payment transfer or screenshot upload is required when using Pay Online.
+
+---
+
+## 6. Option 2: Pay via GCash (Manual)
+
+The **Pay via GCash (Manual)** option allows customers to make the payment themselves through the GCash application.
+
+### How to Pay via GCash QR Code
+
+1. Select **Pay via GCash (Manual)**.
+2. Open the GCash application.
+3. Open the QR Code scanner and scan the QR Code.
+4. Complete the payment.
+5. Take a screenshot of the successful payment transaction.
+6. Return to the booking page.
+7. Upload the payment screenshot as proof of payment.
+8. Submit the booking/payment information.
+9. Wait for the resort staff to verify the payment.
+
+---
+
+## 7. Confirming the Reservation
+
+After completing the payment:
+
+### For Pay Online
+
+The reservation is automatically confirmed once the payment successfully goes through.
+
+### For Manual GCash
+
+The customer must upload the payment screenshot as proof.
+
+The resort staff then verifies the payment before confirming the reservation.
+
+---
+
+## 8. Checking the Booking
+
+After making a reservation:
+
+1. Click **My Booking** in the navigation menu.
+2. Enter the required booking information.
+3. View the reservation details.
+4. Check the booking status.
+5. Verify the cottage, date, customer information, and payment status.
+
+---
+
+## 9. Important Reminders
+
+• Make sure all booking information is correct.
+
+• Check the selected cottage and reservation date before payment.
+
+• Make sure the payment amount is correct.
+
+• For online payment, complete the checkout process without closing the page.
+
+• For manual GCash payment, keep the payment screenshot as proof.
+
+• Upload a clear and readable payment screenshot.
+
+• Do not submit false or edited payment receipts.
+
+• Keep your booking information for future reference.
+
+• Check **My Booking** after completing the reservation.
+
+---
+
+## 10. Quick Guide
+
+### For Online Payment
+
+1. Book a cottage.
+2. Select **Pay Online**.
+3. Click **Confirm Reservation**.
+4. Complete the secure checkout.
+5. Pay using Card, GCash, Maya, or QR Ph.
+6. Booking is automatically confirmed.
+
+### For Manual GCash
+
+1. Book a cottage.
+2. Select **Pay via GCash (Manual)**.
+3. Send payment through GCash.
+4. Take a screenshot of the payment.
+5. Upload the screenshot.
+6. Submit the payment proof.
+7. Wait for verification.
+8. Check **My Booking** for the reservation status.
+
+---
+
+# S-Five Inland Resort – Simple Admin Manual
+
+## 1. Go to Browser
+
+Search this link:
+
+`https://s-five.infinityfree.me/admin`
+
+This link opens the Admin Dashboard.
+
+---
+
+## 2. Dashboard
+
+The dashboard shows the main information about the resort.
+
+• Total bookings
+
+• Pending bookings
+
+• Confirmed bookings
+
+• Monthly revenue
+
+• Available cottages
+
+• Today's check-ins
+
+---
+
+## 3. Reservations
+
+Use this page to manage customer bookings.
+
+• View bookings
+
+• Check booking details
+
+• Confirm pending bookings
+
+• Update reservations
+
+---
+
+## 4. Cottages
+
+Use this page to manage cottages.
+
+• View cottages
+
+• Add a new cottage
+
+• Update cottage information
+
+• Check cottage availability
+
+---
+
+## 5. Guests
+
+Use this page to view customer information.
+
+• View guest names
+
+• View contact details
+
+• Check guest bookings
+
+---
+
+## 6. Reports
+
+Use this page to view or generate reports about:
+
+• Bookings
+
+• Revenue
+
+• Guests
+
+---
+
+## 7. GCash Payments
+
+Use this page to check manual GCash payments.
+
+• View payment submissions
+
+• Check uploaded payment proof
+
+• Verify payments
+
+---
+
+## 8. Settings
+
+Use this page to manage the system settings.
+
+---
+
+## 9. Quick Actions
+
+The dashboard provides shortcuts for:
+
+• Pending Reservations – Review pending bookings
+
+• Add New Cottage – Add a cottage
+
+• Generate Report – Create a report
+
+• View Booking Page – Open the customer website
+
+---
+
+## 10. Sign Out
+
+When finished, click **Sign Out** to safely leave the Admin Panel.
+
+---
+
+## Simple Admin Flow
+
+**Login → Dashboard → Check Reservations → Verify Payments → Manage Cottages/Guests → Generate Reports → Sign Out**
