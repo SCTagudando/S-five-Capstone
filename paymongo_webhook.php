@@ -1,12 +1,4 @@
 <?php
-// paymongo_webhook.php — Receives PayMongo payment events
-// Register this URL in your PayMongo Dashboard > Webhooks:
-// https://yourdomain.com/sfive/paymongo_webhook.php
-//
-// Events to enable in dashboard:
-//   - link.payment.paid
-//   - payment.paid
-
 require_once 'includes/config.php';
 require_once 'includes/paymongo.php';
 
@@ -50,26 +42,57 @@ file_put_contents($logDir . 'webhook_payload.log',
     FILE_APPEND
 );
 
-if ($eventType === 'link.payment.paid' || $eventType === 'payment.paid') {
+if ($eventType === 'checkout_session.payment.paid' || $eventType === 'link.payment.paid' || $eventType === 'payment.paid') {
 
     $db = getDB();
     $booking_code = '';
     $amount_paid  = 0;
     $payment_id   = '';
 
-    if ($eventType === 'link.payment.paid') {
-        // Payload: event.data.attributes.data = the payment link object
-        // The link has metadata with booking_code
+    if ($eventType === 'checkout_session.payment.paid') {
+        // Payload: event.data.attributes.data = the checkout session object
+        $sessionObj  = $event['data']['attributes']['data'] ?? [];
+        $sessionAttr = $sessionObj['attributes'] ?? [];
+
+        // metadata carries booking_code (set when the session was created)
+        $metadata     = $sessionAttr['metadata'] ?? [];
+        $booking_code = $metadata['booking_code'] ?? '';
+
+        // reference_number was also set to booking_code at creation
+        if (!$booking_code) {
+            $booking_code = $sessionAttr['reference_number'] ?? '';
+        }
+
+        // pull the paid payment for amount + payment id
+        $payments = $sessionAttr['payments'] ?? [];
+        foreach ($payments as $p) {
+            if (($p['attributes']['status'] ?? '') === 'paid') {
+                $payment_id  = $p['id'] ?? '';
+                $amount_paid = ($p['attributes']['amount'] ?? 0) / 100;
+                break;
+            }
+        }
+
+        // Fallback: look up by paymongo_link_id (checkout session id, cs_...)
+        if (!$booking_code) {
+            $session_id = $sessionObj['id'] ?? '';
+            if ($session_id) {
+                $stmt = $db->prepare("SELECT booking_code FROM reservations WHERE paymongo_link_id = ?");
+                $stmt->execute([$session_id]);
+                $row = $stmt->fetch();
+                $booking_code = $row['booking_code'] ?? '';
+            }
+        }
+
+    } elseif ($eventType === 'link.payment.paid') {
         $linkObj      = $event['data']['attributes']['data'] ?? [];
         $linkAttr     = $linkObj['attributes'] ?? [];
         $payment_id   = $linkObj['id'] ?? '';
         $amount_paid  = ($linkAttr['amount'] ?? 0) / 100;
 
-        // booking_code is stored in link metadata
         $metadata     = $linkAttr['metadata'] ?? [];
         $booking_code = $metadata['booking_code'] ?? '';
 
-        // Also try to get booking_code from remarks if metadata is empty
         if (!$booking_code) {
             $remarks      = $linkAttr['remarks'] ?? '';
             // remarks format: "Booking: SFR-XXXXXXXX"
@@ -78,7 +101,6 @@ if ($eventType === 'link.payment.paid' || $eventType === 'payment.paid') {
             }
         }
 
-        // Fallback: look up by paymongo_link_id
         if (!$booking_code) {
             $link_id = $linkObj['id'] ?? '';
             if ($link_id) {
@@ -90,17 +112,14 @@ if ($eventType === 'link.payment.paid' || $eventType === 'payment.paid') {
         }
 
     } elseif ($eventType === 'payment.paid') {
-        // Payload: event.data.attributes.data = the payment object
         $payObj       = $event['data']['attributes']['data'] ?? [];
         $payAttr      = $payObj['attributes'] ?? [];
         $payment_id   = $payObj['id'] ?? '';
         $amount_paid  = ($payAttr['amount'] ?? 0) / 100;
 
-        // metadata on the payment object
         $metadata     = $payAttr['metadata'] ?? [];
         $booking_code = $metadata['booking_code'] ?? '';
 
-        // Fallback: check description / statement_descriptor
         if (!$booking_code) {
             $desc = $payAttr['description'] ?? '';
             if (preg_match('/(SFR-\w+)/', $desc, $m)) {

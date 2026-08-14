@@ -1,5 +1,6 @@
 <?php
 require_once 'auth.php';
+require_once '../includes/mailer.php';
 $page_title = 'GCash Payments';
 $db = getDB();
 $msg = '';
@@ -20,7 +21,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Confirm the reservation and mark paid
             $stmt = $db->prepare("UPDATE reservations SET status='Confirmed', payment_status='Paid' WHERE id=?");
             $stmt->execute([$rid]);
-            $msg = "success:Payment verified! Reservation has been Confirmed and marked as Paid.";
+
+            // Send booking confirmation email to guest
+            $rstmt = $db->prepare("
+                SELECT r.*, c.name AS cottage_name
+                FROM reservations r
+                JOIN cottages c ON r.cottage_id = c.id
+                WHERE r.id = ?
+            ");
+            $rstmt->execute([$rid]);
+            $resv = $rstmt->fetch();
+            $emailSent = $resv ? sendBookingConfirmedEmail($resv) : false;
+
+            $msg = $emailSent
+                ? "success:Payment verified! Reservation has been Confirmed and a confirmation email was sent to the guest."
+                : "success:Payment verified! Reservation has been Confirmed and marked as Paid. (Confirmation email could not be sent — check logs/mailer.log)";
         } else {
             // Set payment status back
             $stmt = $db->prepare("UPDATE reservations SET payment_status='Unpaid' WHERE id=?");

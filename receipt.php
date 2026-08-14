@@ -1,7 +1,5 @@
 <?php
 // receipt.php — Screenshot-friendly booking receipt (save as PNG or JPEG)
-// Since no email or SMS confirmation is actually sent to guests, this page
-// gives them something concrete to download and keep as proof of booking.
 require_once 'includes/config.php';
 $db = getDB();
 

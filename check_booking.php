@@ -19,20 +19,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_booking'])) {
     $toCancel = $stmt->fetch();
 
     if (!$toCancel) {
-        $cancel_msg = "error:Booking not found.";
+        $_SESSION['cancel_msg'] = "error:Booking not found.";
     } elseif ($toCancel['status'] === 'Cancelled') {
-        $cancel_msg = "error:This booking has already been cancelled.";
+        $_SESSION['cancel_msg'] = "error:This booking has already been cancelled.";
     } else {
         $hoursSinceBooked = (time() - strtotime($toCancel['created_at'])) / 3600;
         if ($hoursSinceBooked > 24) {
-            $cancel_msg = "error:The 24-hour cancellation window for this booking has passed. Please contact the resort directly.";
+            $_SESSION['cancel_msg'] = "error:The 24-hour cancellation window for this booking has passed. Please contact the resort directly.";
         } else {
-            $db->prepare("UPDATE reservations SET status='Cancelled', payment_status='Unpaid' WHERE id=?")
-               ->execute([$toCancel['id']]);
-            $cancel_msg = "success:Your booking has been cancelled.";
+            // Preserve payment history: a booking that was already Paid stays
+            // Paid so the admin knows a refund is owed, instead of silently
+            // flipping to Unpaid and losing that fact.
+            $newPaymentStatus = $toCancel['payment_status'] === 'Paid' ? 'Paid' : 'Unpaid';
+            $db->prepare("UPDATE reservations
+                          SET status='Cancelled', payment_status=?, cancelled_by='Guest', cancelled_at=NOW()
+                          WHERE id=?")
+               ->execute([$newPaymentStatus, $toCancel['id']]);
+            $_SESSION['cancel_msg'] = "success:Your booking has been cancelled.";
         }
     }
-    $code = $cancel_code;
+
+    header('Location: check_booking.php?code=' . urlencode($cancel_code));
+    exit;
+}
+
+if (isset($_SESSION['cancel_msg'])) {
+    $cancel_msg = $_SESSION['cancel_msg'];
+    unset($_SESSION['cancel_msg']);
 }
 
 if ($code) {
@@ -54,8 +67,6 @@ if ($code) {
         $gcash_proof = $gstmt->fetch();
     }
 
-    // ── PayMongo Polling Fallback ─────────────────────────────────────────
-    // If webhook didn't fire, check PayMongo directly when guest views booking
     if ($reservation
         && $reservation['payment_method'] === 'GCash Online'
         && $reservation['payment_status'] !== 'Paid'
@@ -89,9 +100,30 @@ if ($code) {
                 date('Y-m-d H:i:s') . " | ✅ POLLED CONFIRMED | {$code} | ₱{$pm['amount']}\n",
                 FILE_APPEND
             );
+        } elseif ($pm['success'] && !$pm['paid'] && in_array($pm['status'], ['expired', 'unknown'], true)) {
+            // Link expired (or PayMongo no longer recognizes it) — regenerate a fresh one
+            // so the guest can still resume payment from this tracking page.
+            $nights = max(1, (strtotime($reservation['check_out']) - strtotime($reservation['check_in'])) / 86400);
+
+            $pm_new = createPaymongoGcashLink([
+                'amount'        => (int)round($reservation['total_price'] * 100),
+                'description'   => $reservation['cottage_name'] . ' (' . $nights . ' night' . ($nights > 1 ? 's' : '') . ')',
+                'booking_code'  => $reservation['booking_code'],
+                'customer_name' => $reservation['guest_name'],
+                'email'         => $reservation['guest_email'],
+                'phone'         => $reservation['guest_phone'],
+            ]);
+
+            if ($pm_new['success']) {
+                $db->prepare("UPDATE reservations SET paymongo_link_id=?, paymongo_checkout_url=? WHERE id=?")
+                   ->execute([$pm_new['link_id'], $pm_new['checkout_url'], $reservation['id']]);
+
+                // Refresh reservation so the page shows the new link
+                $stmt->execute([$code]);
+                $reservation = $stmt->fetch();
+            }
         }
     }
-    // ─────────────────────────────────────────────────────────────────────
 }
 
 [$cancel_msg_type, $cancel_msg_text] = $cancel_msg ? explode(':', $cancel_msg, 2) : ['', ''];
@@ -192,8 +224,25 @@ if ($code) {
             <p class="note-text">⏱️ The 24-hour cancellation window has passed. Please contact the resort to make changes.</p>
             <?php endif; ?>
 
+            <?php if ($reservation['payment_method'] === 'GCash Online'
+                      && $reservation['payment_status'] !== 'Paid'
+                      && $reservation['status'] !== 'Cancelled'
+                      && !empty($reservation['paymongo_checkout_url'])): ?>
+            <div class="alert-error" style="background:#eaf6ff;border-color:#b6e0fe;color:#0a4a7a;">
+                💳 Your booking is still <strong>pending payment</strong>. If you closed the checkout page before finishing, you can resume it below.
+            </div>
+            <?php endif; ?>
+
             <div class="success-actions">
                 <a href="receipt.php?code=<?= $reservation['booking_code'] ?>" class="btn-primary" target="_blank">🧾 View Receipt</a>
+                <?php if ($reservation['payment_method'] === 'GCash Online'
+                          && $reservation['payment_status'] !== 'Paid'
+                          && $reservation['status'] !== 'Cancelled'
+                          && !empty($reservation['paymongo_checkout_url'])): ?>
+                <a href="<?= htmlspecialchars($reservation['paymongo_checkout_url']) ?>" class="btn-primary" target="_blank" style="background:#0072CE;border-color:#0072CE;">
+                    💳 Pay Now
+                </a>
+                <?php endif; ?>
                 <?php if (!empty($gcash_proof) && !empty($gcash_proof['proof_image'])): ?>
                 <a href="view_proof.php?code=<?= urlencode($reservation['booking_code']) ?>" class="btn-ghost">📷 View My Payment Proof</a>
                 <?php endif; ?>

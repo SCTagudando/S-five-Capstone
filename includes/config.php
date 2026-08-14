@@ -1,22 +1,24 @@
 <?php
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
+date_default_timezone_set('Asia/Manila');
+
+define('DB_HOST', '');
+define('DB_USER', '');
 define('DB_PASS', '');
-define('DB_NAME', 'sfive_resort');
+define('DB_NAME', '');
 
-define('SITE_NAME', 'S-Five Inland Resort');
-define('SITE_URL', 'http://localhost/sfive');
+define('SITE_NAME', '');
+define('SITE_URL', '');
 //API Keys.
-define('PAYMONGO_SECRET_KEY',     'sk_test_RRfG4BKw94BxiofgY4dVy8yZ');
-define('PAYMONGO_PUBLIC_KEY',     'pk_test_TbV9kiX1LYunLVT4PMqDFMvt');
-define('PAYMONGO_WEBHOOK_SECRET', 'whsk_afuS76FLeMokF7DVJ74iUmS5');
+define('PAYMONGO_SECRET_KEY',     '');
+define('PAYMONGO_PUBLIC_KEY',     '');
+define('PAYMONGO_WEBHOOK_SECRET', '');
 
-// Manual GCash payment details shown to guests on the booking page.
-// These are only a fallback used before the `gcash_settings` table has a
-// row. The actual QR code image + account name shown to guests are now
-// managed live from Admin > Settings (see includes/gcash.php).
-define('GCASH_NUMBER',       '0917-123-4567');
-define('GCASH_ACCOUNT_NAME', 'S-Five Inland Resort');
+define('GCASH_NUMBER',       '');
+define('GCASH_ACCOUNT_NAME', '');
+
+// Brevo API Key.
+define('BREVO_API_KEY',      '');
+define('BREVO_SENDER_EMAIL', '');
 
 function getDB() {
     static $pdo = null;

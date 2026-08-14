@@ -10,7 +10,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
 
     if ($id && in_array($action, ['Confirmed', 'Cancelled', 'Pending'])) {
-        $stmt = $db->prepare("UPDATE reservations SET status = ? WHERE id = ?");
+        if ($action === 'Cancelled') {
+            $stmt = $db->prepare("UPDATE reservations SET status = ?, cancelled_by='Admin', cancelled_at=NOW() WHERE id = ?");
+        } else {
+            $stmt = $db->prepare("UPDATE reservations SET status = ?, cancelled_by=NULL, cancelled_at=NULL WHERE id = ?");
+        }
         $stmt->execute([$action, $id]);
         $msg = "Reservation updated to <strong>$action</strong> successfully.";
     }
@@ -102,8 +106,17 @@ include 'partials/header.php';
                 <div class="detail-row"><span>Total Price</span><strong>₱<?= number_format($viewing['total_price'],2) ?></strong></div>
                 <div class="detail-row"><span>Payment</span><strong><?= $viewing['payment_status'] ?></strong></div>
                 <div class="detail-row"><span>Booked On</span><strong><?= date('M d, Y g:i A', strtotime($viewing['created_at'])) ?></strong></div>
+                <?php if ($viewing['status'] === 'Cancelled' && !empty($viewing['cancelled_at'])): ?>
+                <div class="detail-row"><span>Cancelled</span><strong><?= date('M d, Y g:i A', strtotime($viewing['cancelled_at'])) ?> (by <?= htmlspecialchars($viewing['cancelled_by'] ?? 'Admin') ?>)</strong></div>
+                <?php endif; ?>
             </div>
         </div>
+
+        <?php if ($viewing['status'] === 'Cancelled' && $viewing['payment_status'] === 'Paid'): ?>
+        <div class="alert-error" style="margin-top:1rem;background:#fff3cd;border-color:#ffe08a;color:#7a5c00;">
+            ⚠️ This booking was <strong>paid</strong> before it was cancelled — a refund may be owed.
+        </div>
+        <?php endif; ?>
 
         <!-- ACTION FORM -->
         <div class="action-bar">
@@ -192,7 +205,12 @@ include 'partials/header.php';
                             <?= $r['payment_status'] ?>
                         </span>
                     </td>
-                    <td><span class="badge badge-<?= strtolower($r['status']) ?>"><?= $r['status'] ?></span></td>
+                    <td>
+                        <span class="badge badge-<?= strtolower($r['status']) ?>"><?= $r['status'] ?></span>
+                        <?php if ($r['status'] === 'Cancelled' && $r['payment_status'] === 'Paid'): ?>
+                        <br><small style="color:#7a5c00;">⚠️ Refund owed</small>
+                        <?php endif; ?>
+                    </td>
                     <td>
                         <div class="inline-actions">
                             <a href="reservations.php?view=<?= $r['id'] ?>" class="btn-sm">View</a>

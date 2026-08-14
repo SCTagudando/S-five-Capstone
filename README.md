@@ -82,7 +82,6 @@ Each has a watermark: _"Sample image — replace with actual photo"_
 
 ---
 
-<<<<<<< HEAD
 ##  GCash QR Code Setup (Manual Payment)
 
 The **Pay via GCash (Manual)** option on the booking page shows guests a QR code + your account name to scan and pay — no typed GCash number. Manage it anytime from **Admin > Settings > GCash QR Code**:
@@ -90,25 +89,45 @@ The **Pay via GCash (Manual)** option on the booking page shows guests a QR code
 2. Set the **GCash Account Name** shown under it
 3. Save — the booking page updates immediately, no code changes needed
 
-This is stored in the `gcash_settings` table. If you already imported an older copy of the database, run this once to add it:
-```sql
-CREATE TABLE `gcash_settings` (
-  `id` int(11) NOT NULL,
-  `account_name` varchar(100) NOT NULL DEFAULT 'S-Five Inland Resort',
-  `qr_image` varchar(255) DEFAULT NULL,
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `gcash_settings` (`id`, `account_name`, `qr_image`) VALUES (1, 'S-Five Inland Resort', NULL);
+##  Email Notifications (Booking Confirmation)
 
-ALTER TABLE `gcash_settings` ADD PRIMARY KEY (`id`);
-ALTER TABLE `gcash_settings` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+Guests get an automatic email when their **manual GCash** payment is verified by an admin in **Admin > GCash Payments**. Since InfinityFree blocks outbound SMTP, email is sent via **Brevo's HTTP API** instead of PHP `mail()`.
+
+### 1. Create a Brevo Account
+- Go to: https://www.brevo.com
+- Sign up free (300 emails/day, no credit card)
+
+### 2. Verify a Sender Email
+- In Brevo: **Senders, Domains & Dedicated IPs > Senders**
+- Add the email guests will see as the sender
+- Click the verification link Brevo sends to that inbox
+
+### 3. Generate an API Key
+- In Brevo: **Settings > SMTP & API > API Keys tab**
+- Click **Generate a new API key**, copy it (shown only once)
+
+### 4. Set Keys in `includes/config.php`
+```php
+define('BREVO_API_KEY',      'xkeysib-xxxxxxxxxxxx');
+define('BREVO_SENDER_EMAIL', 'yourverified@email.com');
+define('BREVO_SENDER_NAME',  'S-Five Inland Resort');
 ```
+
+### 5. Authorise Your Server's IP
+Brevo blocks API calls from unrecognised IPs for security. If you see a `401 unauthorized` error in `logs/mailer.log`, go to https://app.brevo.com/security/authorised_ips and authorise the IP shown in the error. **Do this once for localhost/dev, and again for your live InfinityFree IP when you deploy.**
+
+### 6. How It Works
+1. Guest submits a booking and pays via **manual GCash**, uploading a screenshot as proof
+2. Admin reviews it in **Admin > GCash Payments** and clicks **Verify Payment**
+3. Reservation is marked **Confirmed** + **Paid**
+4. `includes/mailer.php` sends a confirmation email (booking code, cottage, dates, total, receipt link) via Brevo
+5. Send failures are logged to `logs/mailer.log` — the admin panel also shows an inline warning if the email didn't go out
+
+> Note: PayMongo's auto-confirmed payments (`paymongo_webhook.php`) do **not** currently trigger this email — only manual GCash verification does.
 
 ---
 
-=======
->>>>>>> 9208a6228cdd386865ccdd24f2211d2488455545
 ##  Cottage Types
 
 | Type | Count | Price | Features |
@@ -126,7 +145,9 @@ ALTER TABLE `gcash_settings` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_I
 - Clickable cottage thumbnails → detail page with photo gallery + lightbox
 - Reservation form with real-time price calculator
 - PayMongo GCash API payment (auto-confirms on payment)
+- Manual GCash payment (QR code + screenshot proof upload)
 - Booking confirmation + track booking page
+- Email confirmation sent to guest once manual GCash payment is verified
 
 **Admin Panel**
 - Dashboard with stats + monthly bookings chart
@@ -142,4 +163,5 @@ ALTER TABLE `gcash_settings` MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_I
 - PHP 7.4+
 - MySQL 5.7+ / MariaDB 10+
 - XAMPP / WAMP / any PHP server
-- cURL or `allow_url_fopen = On` in php.ini (for PayMongo API)
+- cURL enabled in php.ini (for PayMongo API and Brevo email)
+- A free Brevo account + API key (for email confirmations — see above)

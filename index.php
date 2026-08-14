@@ -8,9 +8,7 @@ $ci = isset($_GET['check_in'])  ? clean($_GET['check_in'])  : '';
 $co = isset($_GET['check_out']) ? clean($_GET['check_out']) : '';
 $gs = isset($_GET['guests'])    ? (int)$_GET['guests']      : 1;
 
-// Fetch ALL cottages (we'll show unavailable ones too with a label)
-// For each cottage check if it has an active confirmed/pending booking that overlaps the given dates
-// If no dates given, just show general "booked today" status
+
 if ($ci && $co) {
     $stmt = $db->prepare("
         SELECT c.*,

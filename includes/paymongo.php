@@ -1,29 +1,28 @@
 <?php
 define('PAYMONGO_API_BASE', 'https://api.paymongo.com/v1');
 
-/**
- * Create a PayMongo Payment Link for GCash
- * Returns the checkout_url the customer visits to pay
- */
 function createPaymongoGcashLink(array $params): array {
     $payload = [
         'data' => [
             'attributes' => [
-                'amount'      => (int)$params['amount'],  // centavos
-                'currency'    => 'PHP',
-                'description' => 'S-Five Resort — ' . $params['description'],
-                'remarks'     => 'Booking: ' . $params['booking_code'],
-                'payment_method_types' => ['gcash'],
                 'send_email_receipt'   => true,
                 'show_description'     => true,
                 'show_line_items'      => true,
+                'description'          => 'S-Five Resort — ' . $params['description'],
+                'reference_number'     => $params['booking_code'],
+                'payment_method_types' => ['gcash', 'qrph', 'card', 'paymaya'],
                 'line_items' => [
                     [
                         'currency'  => 'PHP',
-                        'amount'    => (int)$params['amount'],
+                        'amount'    => (int)$params['amount'], // centavos
                         'name'      => $params['description'],
                         'quantity'  => 1,
                     ]
+                ],
+                'billing' => [
+                    'name'  => $params['customer_name'] ?? '',
+                    'email' => $params['email'] ?? '',
+                    'phone' => $params['phone'] ?? '',
                 ],
                 'metadata' => [
                     'booking_code' => $params['booking_code'],
@@ -32,7 +31,7 @@ function createPaymongoGcashLink(array $params): array {
         ]
     ];
 
-    $response = paymongoRequest('POST', '/links', $payload);
+    $response = paymongoRequest('POST', '/checkout_sessions', $payload);
 
     if (!$response || isset($response['errors'])) {
         $errMsg = $response['errors'][0]['detail'] ?? 'PayMongo API error';
@@ -42,7 +41,7 @@ function createPaymongoGcashLink(array $params): array {
     $attr = $response['data']['attributes'] ?? [];
     return [
         'success'          => true,
-        'link_id'          => $response['data']['id'],
+        'link_id'          => $response['data']['id'], // cs_... checkout session id
         'checkout_url'     => $attr['checkout_url'] ?? '',
         'status'           => $attr['status'] ?? '',
         'reference_number' => $attr['reference_number'] ?? '',
@@ -50,10 +49,11 @@ function createPaymongoGcashLink(array $params): array {
 }
 
 /**
- * Retrieve a payment link status from PayMongo
+ * Retrieve a checkout session's payment status from PayMongo.
+ * $link_id is the cs_... id saved in reservations.paymongo_link_id.
  */
 function getPaymongoLinkStatus(string $link_id): array {
-    $response = paymongoRequest('GET', '/links/' . $link_id, []);
+    $response = paymongoRequest('GET', '/checkout_sessions/' . $link_id, []);
 
     if (!$response || isset($response['errors'])) {
         return ['success' => false, 'status' => 'unknown'];
@@ -63,21 +63,23 @@ function getPaymongoLinkStatus(string $link_id): array {
     $payments = $attr['payments'] ?? [];
     $paid     = false;
     $payment_id = '';
+    $amount     = 0;
 
     foreach ($payments as $p) {
         if (($p['attributes']['status'] ?? '') === 'paid') {
             $paid       = true;
             $payment_id = $p['id'];
+            $amount     = $p['attributes']['amount'] ?? 0;
             break;
         }
     }
 
     return [
         'success'    => true,
-        'status'     => $attr['status'] ?? 'unpaid',
+        'status'     => $attr['status'] ?? 'unpaid', // 'active' or 'expired' for checkout sessions
         'paid'       => $paid,
         'payment_id' => $payment_id,
-        'amount'     => ($attr['amount'] ?? 0) / 100,
+        'amount'     => $amount / 100,
     ];
 }
 

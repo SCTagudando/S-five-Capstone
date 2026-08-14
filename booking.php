@@ -425,20 +425,20 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
     <!-- ====== SUCCESS ====== -->
     <?php if ($success && $booking_result): ?>
     <div class="success-card">
-        <div class="success-icon"><?= $booking_result['payment_method']==='GCash Online' ? '🌐' : '💚' ?></div>
+        <div class="success-icon"><?= $booking_result['payment_method']==='GCash Online' ? '💳' : '💚' ?></div>
         <h2>Booking Submitted!</h2>
         <p>Thank you for choosing <strong>S-Five Inland Resort!</strong> 🌴</p>
 
         <?php if ($booking_result['payment_method'] === 'GCash Online'): ?>
         <div class="gcash-success-note">
-            <div class="gcash-icon-big">🌐</div>
+            <div class="gcash-icon-big">💳</div>
             <?php if (!empty($booking_result['gcash_checkout_url'])): ?>
-            <p><strong>Your GCash payment link is ready!</strong></p>
-            <p>Click the button below to complete your payment via GCash. This page will automatically confirm once payment is received.</p>
+            <p><strong>Your secure checkout is ready!</strong></p>
+            <p>Click the button below to pay by card, GCash, Maya, or QR Ph. This page will automatically confirm once payment is received.</p>
             <a href="<?= htmlspecialchars($booking_result['gcash_checkout_url']) ?>"
                class="btn-gcash-pay" target="_blank" rel="noopener"
                onclick="startPaymentPolling()">
-                💚 Pay via GCash Now
+                💳 Pay Now
             </a>
 
             <!-- Live payment status indicator -->
@@ -453,7 +453,7 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                 <p style="font-size:0.85rem;color:#047857;">Your booking is now <strong>Confirmed</strong>. Thank you!</p>
             </div>
             <?php else: ?>
-            <p><strong>Booking submitted!</strong> We'll send you the GCash payment link shortly.</p>
+            <p><strong>Booking submitted!</strong> We'll send you the payment link shortly.</p>
             <?php endif; ?>
         </div>
 
@@ -532,7 +532,7 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
             <div class="summary-row total-row"><span>Total Amount</span><strong>₱<?= number_format($booking_result['total'], 2) ?></strong></div>
         </div>
 
-        <p class="note-text">🧾 No email confirmation is sent — save or screenshot your <a href="receipt.php?code=<?= $booking_result['code'] ?>" target="_blank">receipt</a> as proof of this booking.</p>
+        <p class="note-text">🧾 A confirmation email will be sent to your email address once your booking has been confirmed.</p>
         <p class="note-text">🔎 Save your booking code above — you can find your booking anytime on the <a href="check_booking.php?code=<?= $booking_result['code'] ?>">My Booking</a> page.</p>
 
         <div class="success-actions">
@@ -676,10 +676,10 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                         <label class="payment-option <?= ($_POST['payment_method'] ?? 'GCash Online')==='GCash Online'?'selected':'' ?>" id="opt-gcash-online">
                             <input type="radio" name="payment_method" value="GCash Online"
                                    <?= ($_POST['payment_method'] ?? 'GCash Online')==='GCash Online'?'checked':'' ?>>
-                            <div class="pay-icon">🌐</div>
+                            <div class="pay-icon">💳</div>
                             <div class="pay-info">
-                                <strong>Pay via GCash (Online)</strong>
-                                <span>Get an instant secure payment link — confirmed automatically.</span>
+                                <strong>Pay Online (Card / GCash / Maya / QR Ph)</strong>
+                                <span>Enter your details on a secure checkout page — confirmed automatically.</span>
                             </div>
                         </label>
                         <label class="payment-option <?= ($_POST['payment_method'] ?? '')==='GCash'?'selected':'' ?>" id="opt-gcash">
@@ -688,27 +688,27 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                             <div class="pay-icon">💵</div>
                             <div class="pay-info">
                                 <strong>Pay via GCash (Manual)</strong>
-                                <span>Send payment yourself and upload a screenshot as proof.</span>
+                                <span>Send payment yourself via the GCash app and upload a screenshot as proof.</span>
                             </div>
                         </label>
                     </div>
 
-                    <!-- GCASH ONLINE NOTE -->
+                    <!-- ONLINE PAYMENT NOTE (Card / GCash / Maya / QR Ph via PayMongo) -->
                     <div class="gcash-form" id="gcashOnlineForm" style="display:none;">
                         <div class="gcash-instructions">
-                            <div class="gcash-logo">🌐 GCash Online</div>
+                            <div class="gcash-logo">💳 Pay Online</div>
                             <div class="gcash-steps">
                                 <p><strong>How it works:</strong></p>
                                 <ol>
                                     <li>Click <strong>"Confirm Reservation"</strong> below</li>
-                                    <li>You'll get a secure <strong>GCash payment link</strong></li>
-                                    <li>Click the link to pay instantly via GCash</li>
-                                    <li>Your booking is <strong>auto-confirmed</strong> upon payment</li>
+                                    <li>You'll be taken to a secure checkout page</li>
+                                    <li>Enter your card details, or choose GCash, Maya, or QR Ph and pay directly — no manual transfer or screenshot needed</li>
+                                    <li>Your booking is <strong>auto-confirmed</strong> the moment payment goes through</li>
                                 </ol>
                             </div>
                         </div>
                         <div class="gcash-note">
-                            Powered by <strong>PayMongo</strong> — secure, instant GCash payments. No manual transfer needed.
+                            Powered by <strong>PayMongo</strong> — secure checkout, accepts Card, GCash, Maya, and QR Ph.
                         </div>
                     </div>
 
@@ -792,13 +792,13 @@ $check_out_val = $check_out ?: ($_POST['check_out'] ?? '');
                     <strong id="summary-total"><?= $total_price?'₱'.number_format($total_price,2):'—' ?></strong>
                 </div>
 
-                <!-- GCash Online reminder -->
+                <!-- Online payment reminder (Card / GCash / Maya / QR Ph) -->
                 <div class="sidebar-gcash" id="sidebarGcashOnline" style="display:none;">
                     <div class="gcash-qr-box">
                         <div class="qr-placeholder">
-                            <span>🌐</span>
+                            <span>💳</span>
                             <p>Secure Checkout</p>
-                            <strong>GCash Payment Link</strong>
+                            <strong>Card, GCash, Maya, QR Ph</strong>
                             <small>Powered by PayMongo</small>
                         </div>
                     </div>
@@ -998,11 +998,6 @@ function refreshCottageAvailability() {
         });
 }
 
-// ── Unavailable-dates indicator ─────────────────────────────
-// Keeps the plain native date pickers, but shows a short text line below
-// them listing which dates are already booked — for the chosen cottage if
-// one's selected, or resort-wide "fully booked" dates (every cottage taken)
-// before a cottage is picked.
 let selectedCottageName = '';
 
 function parseISO(s) {
@@ -1112,13 +1107,13 @@ function applyPaymentMethod(value) {
 
     document.getElementById('submitBtn').textContent = isManual
         ? 'Submit Booking + Payment Proof 💵'
-        : 'Confirm Reservation 🌐';
+        : 'Confirm Reservation 💳';
     document.getElementById('formNote').textContent = isManual
         ? 'Pay via GCash first, then submit — your booking will show as Pending Verification until confirmed.'
-        : "You'll get a secure GCash payment link right after submitting.";
+        : "You'll be taken to a secure checkout page right after submitting.";
     document.getElementById('sidebar-pay-note').innerHTML = isManual
         ? '💚 Paying via GCash Manual<br>Upload proof after sending payment'
-        : '🌐 Paying via GCash Online<br>Secure link sent after booking';
+        : '💳 Paying Online<br>Card, GCash, Maya, or QR Ph';
 
     setGcashFieldsRequired(isManual);
 }

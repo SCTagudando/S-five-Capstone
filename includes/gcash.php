@@ -41,7 +41,7 @@ function uploadGcashProof(array $file, string $booking_code): string {
         return '';
     }
 
-    if ($file['size'] > 5 * 1024 * 1024) { // 5 MB max
+    if ($file['size'] > 5 * 1024 * 1024) {
         return '';
     }
 
@@ -58,8 +58,6 @@ function uploadGcashProof(array $file, string $booking_code): string {
 
 /**
  * Get the current GCash QR code + account name shown to guests.
- * Falls back to the legacy GCASH_ACCOUNT_NAME constant if the
- * settings row hasn't been created yet.
  */
 function getGcashSettings(PDO $db): array {
     $row = $db->query("SELECT account_name, qr_image FROM gcash_settings WHERE id = 1")->fetch();
@@ -76,7 +74,6 @@ function getGcashSettings(PDO $db): array {
 
 /**
  * Save/replace the admin-uploaded GCash QR code image and account name.
- * QR image is restricted to JPEG only. Returns ['success'=>bool,'error'=>?string].
  */
 function saveGcashSettings(PDO $db, string $account_name, ?array $file): array {
     $upload_dir  = __DIR__ . '/../uploads/gcash/';
